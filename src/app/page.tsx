@@ -1,6 +1,10 @@
+import AreaChartExample from "@/components/AreaChartExample"
+
 const Homepage = () => {
   return (
-    <div className=''>Homepage</div>
+    <div className=''>
+      <AreaChartExample/>
+    </div>
   )
 }
 
