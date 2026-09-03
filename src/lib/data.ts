@@ -1,4 +1,13 @@
 // TEMPORARY DATA
+const getRelativeDate = (dayOffset: number, hour: number, minute: number) => {
+  const today = new Date();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7)); // بداية الأسبوع الحالي (الإثنين)
+  const date = new Date(monday);
+  date.setDate(monday.getDate() + dayOffset);
+  date.setHours(hour, minute, 0, 0);
+  return date;
+};
 
 export let role = "admin";
 
@@ -915,149 +924,152 @@ export const announcementsData = [
   },
 ];
 
-
 // YOU SHOULD CHANGE THE DATES OF THE EVENTS TO THE CURRENT DATE TO SEE THE EVENTS ON THE CALENDAR
 export const calendarEvents = [
   {
     title: "Math",
     allDay: false,
-    start: new Date(2024, 7, 12, 8, 0),
-    end: new Date(2024, 7, 12, 8, 45),
+    start: getRelativeDate(0, 8, 0),
+    end: getRelativeDate(0, 8, 45),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(2024, 7, 12, 9, 0),
-    end: new Date(2024, 7, 12, 9, 45),
+    start: getRelativeDate(0, 9, 0),
+    end: getRelativeDate(0, 9, 45),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(2024, 7, 12, 10, 0),
-    end: new Date(2024, 7, 12, 10, 45),
+    start: getRelativeDate(0, 10, 0),
+    end: getRelativeDate(0, 10, 45),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(2024, 7, 12, 11, 0),
-    end: new Date(2024, 7, 12, 11, 45),
+    start: getRelativeDate(0, 11, 0),
+    end: getRelativeDate(0, 11, 45),
   },
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(2024, 7, 12, 13, 0),
-    end: new Date(2024, 7, 12, 13, 45),
+    start: getRelativeDate(0, 13, 0),
+    end: getRelativeDate(0, 13, 45),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(2024, 7, 12, 14, 0),
-    end: new Date(2024, 7, 12, 14, 45),
+    start: getRelativeDate(0, 14, 0),
+    end: getRelativeDate(0, 14, 45),
   },
+
+  // Tuesday
   {
     title: "English",
     allDay: false,
-    start: new Date(2024, 7, 13, 9, 0),
-    end: new Date(2024, 7, 13, 9, 45),
+    start: getRelativeDate(1, 9, 0),
+    end: getRelativeDate(1, 9, 45),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(2024, 7, 13, 10, 0),
-    end: new Date(2024, 7, 13, 10, 45),
+    start: getRelativeDate(1, 10, 0),
+    end: getRelativeDate(1, 10, 45),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(2024, 7, 13, 11, 0),
-    end: new Date(2024, 7, 13, 11, 45),
+    start: getRelativeDate(1, 11, 0),
+    end: getRelativeDate(1, 11, 45),
   },
-
   {
     title: "History",
     allDay: false,
-    start: new Date(2024, 7, 13, 14, 0),
-    end: new Date(2024, 7, 13, 14, 45),
+    start: getRelativeDate(1, 14, 0),
+    end: getRelativeDate(1, 14, 45),
   },
+
+  // Wednesday
   {
     title: "Math",
     allDay: false,
-    start: new Date(2024, 7, 14, 8, 0),
-    end: new Date(2024, 7, 14, 8, 45),
+    start: getRelativeDate(2, 8, 0),
+    end: getRelativeDate(2, 8, 45),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(2024, 7, 14, 10, 0),
-    end: new Date(2024, 7, 14, 10, 45),
+    start: getRelativeDate(2, 10, 0),
+    end: getRelativeDate(2, 10, 45),
   },
-
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(2024, 7, 14, 13, 0),
-    end: new Date(2024, 7, 14, 13, 45),
+    start: getRelativeDate(2, 13, 0),
+    end: getRelativeDate(2, 13, 45),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(2024, 7, 14, 14, 0),
-    end: new Date(2024, 7, 13, 14, 45),
+    start: getRelativeDate(2, 14, 0),
+    end: getRelativeDate(2, 14, 45), // fixed: was pointing to Tuesday in the original data
   },
+
+  // Thursday
   {
     title: "English",
     allDay: false,
-    start: new Date(2024, 7, 15, 9, 0),
-    end: new Date(2024, 7, 15, 9, 45),
+    start: getRelativeDate(3, 9, 0),
+    end: getRelativeDate(3, 9, 45),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(2024, 7, 15, 10, 0),
-    end: new Date(2024, 7, 15, 10, 45),
+    start: getRelativeDate(3, 10, 0),
+    end: getRelativeDate(3, 10, 45),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(2024, 7, 15, 11, 0),
-    end: new Date(2024, 7, 15, 11, 45),
+    start: getRelativeDate(3, 11, 0),
+    end: getRelativeDate(3, 11, 45),
   },
-
   {
     title: "History",
     allDay: false,
-    start: new Date(2024, 7, 15, 14, 0),
-    end: new Date(2024, 7, 15, 14, 45),
+    start: getRelativeDate(3, 14, 0),
+    end: getRelativeDate(3, 14, 45),
   },
+
+  // Friday
   {
     title: "Math",
     allDay: false,
-    start: new Date(2024, 7, 16, 8, 0),
-    end: new Date(2024, 7, 16, 8, 45),
+    start: getRelativeDate(4, 8, 0),
+    end: getRelativeDate(4, 8, 45),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(2024, 7, 16, 9, 0),
-    end: new Date(2024, 7, 16, 9, 45),
+    start: getRelativeDate(4, 9, 0),
+    end: getRelativeDate(4, 9, 45),
   },
-
   {
     title: "Physics",
     allDay: false,
-    start: new Date(2024, 7, 16, 11, 0),
-    end: new Date(2024, 7, 16, 11, 45),
+    start: getRelativeDate(4, 11, 0),
+    end: getRelativeDate(4, 11, 45),
   },
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(2024, 7, 16, 13, 0),
-    end: new Date(2024, 7, 16, 13, 45),
+    start: getRelativeDate(4, 13, 0),
+    end: getRelativeDate(4, 13, 45),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(2024, 7, 16, 14, 0),
-    end: new Date(2024, 7, 16, 14, 45),
+    start: getRelativeDate(4, 14, 0),
+    end: getRelativeDate(4, 14, 45),
   },
 ];

@@ -17,12 +17,12 @@ export default function DashbordLayout({
           className="flex items-center gap-3 justify-center lg:justify-start flex-wrap"
         >
           <Image src="/logo.png" alt="logo" width={32} height={32} />
-          <span className="hiddin lg:block">SchooLama</span>
+          <span className="hidden lg:block">SchooLama</span>
         </Link>
         <Menu />
       </div>
       {/* RIGHT */}
-      <div className="w-[86%] md:w-[92%] xl:w-[86%] bg-[#F7F8FA]">
+      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-auto overflow-x-hidden flex flex-col min-w-0">
         <NavBar />
         {children}
       </div>

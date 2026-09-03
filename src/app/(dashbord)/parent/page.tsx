@@ -2,13 +2,13 @@ import Announcement from "@/components/Announcement";
 import BigCalender from "@/components/BigCalender";
 import EventCalender from "@/components/EventCalender";
 
-const TeacherPage = () => {
+const ParentPage = () => {
   return (
     <section className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}
       <div className="w-full xl:w-2/3 ">
       <div className="h-full bg-white p-4 rounded-md">
-        <h1 className="text-xl font-semibold">Schedule</h1>
+        <h1 className="text-xl font-semibold">Schedule (John Doe)</h1>
         <BigCalender/>
       </div>
       </div>
@@ -21,4 +21,4 @@ const TeacherPage = () => {
   );
 };
 
-export default TeacherPage;
+export default ParentPage ;
