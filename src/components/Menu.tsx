@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link"
+import Link from "next/link";
 const menuItems = [
   {
     title: "MENU",
@@ -13,79 +13,79 @@ const menuItems = [
       {
         icon: "/teacher.png",
         label: "Teachers",
-        href: "/list/teachers",
+        href: "/teacher",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/student.png",
         label: "Students",
-        href: "/list/students",
+        href: "/student",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/parent.png",
         label: "Parents",
-        href: "/list/parents",
+        href: "/parent",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/subject.png",
         label: "Subjects",
-        href: "/list/subjects",
+        href: "/subject",
         visible: ["admin"],
       },
       {
         icon: "/class.png",
         label: "Classes",
-        href: "/list/classes",
+        href: "/class",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/lesson.png",
         label: "Lessons",
-        href: "/list/lessons",
+        href: "/lesson",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/exam.png",
         label: "Exams",
-        href: "/list/exams",
+        href: "/exam",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/assignment.png",
         label: "Assignments",
-        href: "/list/assignments",
+        href: "/assignment",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/result.png",
         label: "Results",
-        href: "/list/results",
+        href: "/result",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/attendance.png",
         label: "Attendance",
-        href: "/list/attendance",
+        href: "/attendance",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/calendar.png",
         label: "Events",
-        href: "/list/events",
+        href: "/events",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/message.png",
         label: "Messages",
-        href: "/list/messages",
+        href: "/messages",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/announcement.png",
         label: "Announcements",
-        href: "/list/announcements",
+        href: "/announcements",
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],
@@ -120,9 +120,15 @@ const Menu = () => {
     <section className="mt-4 text-sm">
       {menuItems.map((i) => (
         <div className="flex gap-2 flex-col" key={i.title}>
-          <span className="hidden lg:block text-gray-400 font-light my-4">{i.title}</span>
+          <span className="hidden lg:block text-gray-400 font-light my-4">
+            {i.title}
+          </span>
           {i.items.map((item) => (
-            <Link className="flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2" href={item.href} key={item.label}>
+            <Link
+              className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 rounded-md hover:bg-lama-sky-light hover:text-lama-sky-dark md:px-2"
+              href={item.href}
+              key={item.label}
+            >
               <Image src={item.icon} alt={item.label} width={20} height={20} />
               <span className="hidden lg:block ">{item.label}</span>
             </Link>
