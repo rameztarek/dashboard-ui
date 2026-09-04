@@ -1,19 +1,19 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
-import { role, teachersData } from "@/lib/data";
+import { role, studentsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
-type Teacher = {
+type Student = {
   id: number;
-  teacherId: string;
+  studentId: string;
   name: string;
   email?: string;
   photo: string;
-  phone: string;
-  subjects: string[];
-  classes: string[];
+  phone?: string;
+  grade: number;
+  class: string;
   address: string;
 };
 
@@ -23,18 +23,13 @@ const columes = [
     accessor: "info",
   },
   {
-    header: "Teacher ID",
+    header: "Student ID",
     accessor: "teacher id",
     className: "hidden md:table-cell",
   },
   {
-    header: "Subject",
-    accessor: "subject",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Class",
-    accessor: "class",
+    header: "Gread",
+    accessor: "Gread",
     className: "hidden md:table-cell",
   },
   {
@@ -53,8 +48,8 @@ const columes = [
   },
 ];
 
-const TeachersPage = () => {
-  const rounderRow = (items: Teacher) => (
+const StudentsPage = () => {
+  const rounderRow = (items: Student) => (
     <tr
       key={items.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lama-purple-light "
@@ -69,12 +64,11 @@ const TeachersPage = () => {
         />
         <div className="flex flex-col">
           <h3 className="font-semibold">{items.name}</h3>
-          <p className="text-xs text-gray-500">{items.email}</p>
+          <p className="text-xs text-gray-500">{items.class}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{items.teacherId}</td>
-      <td className="hidden md:table-cell">{items.subjects.join(",")}</td>
-      <td className="hidden md:table-cell">{items.classes.join(",")}</td>
+      <td className="hidden md:table-cell">{items.studentId}</td>
+      <td className="hidden md:table-cell">{items.grade}</td>
       <td className="hidden md:table-cell">{items.phone}</td>
       <td className="hidden md:table-cell">{items.address}</td>
       <td>
@@ -98,7 +92,7 @@ const TeachersPage = () => {
     <section className="bg-white p-4 rounded-md flex-1 m-4 mt-0 ">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className=" hidden md:block text-lg font-semibold">All Teachers</h1>
+        <h1 className=" hidden md:block text-lg font-semibold">All Students</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSerach />
           <div className="flex gap-4 items-center self-end">
@@ -117,11 +111,11 @@ const TeachersPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columes={columes} rounderRow={rounderRow} data={teachersData} />
+      <Table columes={columes} rounderRow={rounderRow} data={studentsData} />
       {/* PAGINATION */}
       <Pagination />
     </section>
   );
 };
 
-export default TeachersPage;
+export default StudentsPage;
