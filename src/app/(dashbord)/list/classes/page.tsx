@@ -61,8 +61,8 @@ const ClassListPage = () => {
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-sky">
-              <Image src="/delete.png" alt="" width={16} height={16} />
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
+              <Image src="/edit.png" alt="" width={16} height={16} />
             </button>
           )}
         </div>
