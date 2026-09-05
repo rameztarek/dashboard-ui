@@ -1,24 +1,36 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
-import { role, subjectsData } from "@/lib/data";
+import { classesData, role, subjectsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
-type Subject = {
+type Class = {
   id: string;
   name: string;
-  teachers: string[];
+  capacity: number;
+  grade: number;
+  supervisor: string;
 };
 
 const columes = [
   {
-    header: "Subject Name",
+    header: "Class Name",
     accessor: "name",
   },
   {
-    header: "Teachers Name",
-    accessor: "teachers",
+    header: "Capacity",
+    accessor: "capacity",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Grade",
+    accessor: "grade",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Supervisor",
+    accessor: "supervisor",
     className: "hidden lg:table-cell",
   },
   {
@@ -27,8 +39,8 @@ const columes = [
   },
 ];
 
-const SubjectListPage = () => {
-  const rounderRow = (items: Subject) => (
+const ClassListPage = () => {
+  const rounderRow = (items: Class) => (
     <tr
       key={items.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lama-purple-light "
@@ -38,7 +50,9 @@ const SubjectListPage = () => {
           <h3 className="font-semibold">{items.name}</h3>
         </div>
       </td>
-      <td className="hidden md:table-cell">{items.teachers.join(",")}</td>
+      <td className="hidden md:table-cell">{items.capacity}</td>
+      <td className="hidden md:table-cell">{items.grade}</td>
+      <td className="hidden md:table-cell">{items.supervisor}</td>
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${items.id}`}>
@@ -60,7 +74,7 @@ const SubjectListPage = () => {
     <section className="bg-white p-4 rounded-md flex-1 m-4 mt-0 ">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className=" hidden md:block text-lg font-semibold">All Subjects</h1>
+        <h1 className=" hidden md:block text-lg font-semibold">All Class</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSerach />
           <div className="flex gap-4 items-center self-end">
@@ -79,11 +93,11 @@ const SubjectListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columes={columes} rounderRow={rounderRow} data={subjectsData} />
+      <Table columes={columes} rounderRow={rounderRow} data={classesData} />
       {/* PAGINATION */}
       <Pagination />
     </section>
   );
 };
 
-export default SubjectListPage;
+export default ClassListPage;
