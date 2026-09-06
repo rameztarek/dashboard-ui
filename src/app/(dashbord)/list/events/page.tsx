@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -22,22 +23,21 @@ const columes = [
   {
     header: "Class",
     accessor: "class",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Date",
     accessor: "date",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Start Time",
     accessor: "startTime",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "End Time",
     accessor: "endTime",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -62,15 +62,11 @@ const EventsListPage = () => {
       <td className="hidden md:table-cell">{items.endTime}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${items.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-sky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="events" type="update" data={items} />
+              <FormModle table="events" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -92,9 +88,7 @@ const EventsListPage = () => {
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
+              <FormModle table="events" type="create" />
             )}
           </div>
         </div>

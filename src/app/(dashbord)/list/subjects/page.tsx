@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -6,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Subject = {
-  id: string;
+  id: number;
   name: string;
   teachers: string[];
 };
@@ -19,7 +20,7 @@ const columes = [
   {
     header: "Teachers Name",
     accessor: "teachers",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -41,15 +42,11 @@ const SubjectListPage = () => {
       <td className="hidden md:table-cell">{items.teachers.join(",")}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${items.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-sky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/edit.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="subjects" type="update" data={items} />
+              <FormModle table="subjects" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -70,11 +67,7 @@ const SubjectListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
-            )}
+            {role === "admin" && <FormModle table="subjects" type="create" />}
           </div>
         </div>
       </div>

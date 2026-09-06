@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -40,12 +41,12 @@ const columes = [
   {
     header: "Phone",
     accessor: "phone",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Address",
     accessor: "address",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -85,9 +86,9 @@ const TeachersPage = () => {
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="teachers" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -109,9 +110,10 @@ const TeachersPage = () => {
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
+              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
+              //   <Image src="/plus.png" alt="filter" width={14} height={14} />
+              // </button>
+              <FormModle table="teachers" type="create" />
             )}
           </div>
         </div>

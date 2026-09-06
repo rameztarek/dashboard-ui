@@ -3,9 +3,8 @@ import BigCalender from "@/components/BigCalender";
 import Announcement from "@/components/Announcement";
 import Link from "next/link";
 import Preformance from "@/components/Preformance";
-import FormModle from "@/components/FormModle";
 
-const SingleTeacherPage = () => {
+const SingleStudentPage = () => {
   return (
     <section className="flex flex-1 p-4 flex-col xl:flex-row gap-4">
       {/* LEFT */}
@@ -24,25 +23,7 @@ const SingleTeacherPage = () => {
               />
             </div>
             <div className="w-2/3 flex flex-col gap-4 justify-between">
-              <div className="flex items-center gap-4">
               <h1 className="text-xl font-semibold">Lorem, ipsum dolor.</h1>
-
-              <FormModle
-                table="teachers"
-                type="update"
-                data={{
-                  userName: "johndoe",
-                  email: "john@doe.com",
-                  password: "123456",
-                  firstName: "John",
-                  lastName: "Doe",
-                  phone: "+1 234 567 890",
-                  address: "123 Main St, Anytown, USA",
-                  birthDate: "2000-01-01",
-                  sex: "male",
-                }}
-                />
-                </div>
               <p className="text-sm text-gray-500">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
               </p>
@@ -139,28 +120,18 @@ const SingleTeacherPage = () => {
         <div className="bg-white p-4 font-semibold">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-lama-sky-light" href="/">
-              Teacher's Classes
-            </Link>
-            <Link className="p-3 rounded-md bg-lama-purple-light" href="/">
-              Teacher's Students
-            </Link>
-            <Link className="p-3 rounded-md bg-lama-yellow-light" href="/">
-              Teacher's Lessons
-            </Link>
-            <Link className="p-3 rounded-md bg-lama-pink-50" href="/">
-              Teacher's Exams
-            </Link>
-            <Link className="p-3 rounded-md bg-lama-sky-light" href="/">
-              Teacher's Assignments
-            </Link>
+            <Link className="p-3 rounded-md bg-lama-sky-light" href="/" >Student's Lessons</Link>
+            <Link className="p-3 rounded-md bg-lama-purple-light" href="/" >Student's Classes</Link>
+            <Link className="p-3 rounded-md bg-lama-yellow-light" href="/" >Student's Assignments</Link>
+            <Link className="p-3 rounded-md bg-lama-pink-50" href="/" >Student's Exams</Link>
+            <Link className="p-3 rounded-md bg-lama-sky-light" href="/" >Student's Results</Link>
           </div>
         </div>
-        <Preformance />
+        <Preformance/>
         <Announcement />
       </div>
     </section>
   );
 };
 
-export default SingleTeacherPage;
+export default SingleStudentPage;

@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -15,23 +16,22 @@ type Exam = {
 
 const columes = [
   {
-    header: " Seubject Name",
+    header: "Subject Name",
     accessor: "name",
   },
   {
     header: "Class",
     accessor: "class",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Teacher",
     accessor: "teacher",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Date",
     accessor: "date",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -61,9 +61,10 @@ const ExamsListPage = () => {
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="exams" type="update" data={items} />
+              <FormModle table="exams" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -85,9 +86,7 @@ const ExamsListPage = () => {
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
+              <FormModle table="exams" type="create" />
             )}
           </div>
         </div>

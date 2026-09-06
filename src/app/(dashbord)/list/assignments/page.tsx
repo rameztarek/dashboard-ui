@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -7,7 +8,7 @@ import Link from "next/link";
 
 type Assignment = {
   id: number;
-  class:string;
+  class: string;
   subject: string;
   teacher: string;
   dueDate: string;
@@ -21,17 +22,16 @@ const columes = [
   {
     header: "Class",
     accessor: "class",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Teacher",
     accessor: "teacher",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Dua Date",
     accessor: "dueDate",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -55,15 +55,11 @@ const AssignmentListPage = () => {
       <td className="hidden md:table-cell">{items.dueDate}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${items.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-sky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="assignments" type="update" data={items} />
+              <FormModle table="assignments" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -74,7 +70,9 @@ const AssignmentListPage = () => {
     <section className="bg-white p-4 rounded-md flex-1 m-4 mt-0 ">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className=" hidden md:block text-lg font-semibold">All Assignment</h1>
+        <h1 className=" hidden md:block text-lg font-semibold">
+          All Assignment
+        </h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSerach />
           <div className="flex gap-4 items-center self-end">
@@ -85,9 +83,7 @@ const AssignmentListPage = () => {
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
+              <FormModle table="assignments" type="create" />
             )}
           </div>
         </div>

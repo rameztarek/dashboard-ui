@@ -1,3 +1,4 @@
+import FormModle from "@/components/FormModle";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSerach from "@/components/TableSerach";
@@ -18,33 +19,32 @@ type Results = {
 
 const columes = [
   {
-    header: " Seubject Name",
+    header: "Subject Name",
     accessor: "name",
   },
   {
     header: "Student",
     accessor: "student",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Score",
     accessor: "score",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Teacher",
     accessor: "teacher",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Class",
     accessor: "class",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Date",
     accessor: "date",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Actions",
@@ -70,15 +70,11 @@ const ResultsListPage = () => {
       <td className="hidden md:table-cell">{items.date}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${items.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-sky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lama-purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
+            <>
+              <FormModle table="results" type="update" data={items} />
+              <FormModle table="results" type="delete" id={items.id} />
+            </>
           )}
         </div>
       </td>
@@ -100,9 +96,7 @@ const ResultsListPage = () => {
               <Image src="/sort.png" alt="filter" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lama-yellow">
-                <Image src="/plus.png" alt="filter" width={14} height={14} />
-              </button>
+              <FormModle table="results" type="create" />
             )}
           </div>
         </div>
