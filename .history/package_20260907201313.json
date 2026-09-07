@@ -36,5 +36,7 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"}tsx prisma/seed.ts"
-  }
+  },"prisma": {
+  "seed": "tsx prisma/seed.ts"
+}
 }

@@ -77,7 +77,7 @@ model Class {
   name         String  @unique
   capacity     Int
   gradeId      Int
-  supervisorId String?
+  supervisorId String
 
   announcements Announcement[]
   grade         Grade          @relation(fields: [gradeId], references: [id])

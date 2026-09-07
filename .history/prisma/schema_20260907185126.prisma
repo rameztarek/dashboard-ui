@@ -67,21 +67,20 @@ model Teacher {
 
 model Grade {
   id       Int       @id @default(autoincrement())
-  level    Int       @unique
   class    Class[]
+  level    Int       @unique
   students Student[]
 }
 
 model Class {
-  id           Int     @id @default(autoincrement())
-  name         String  @unique
-  capacity     Int
-  gradeId      Int
-  supervisorId String?
-
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  capacity      Int
+  gradeId       Int
+  supervisorId  String
   announcements Announcement[]
   grade         Grade          @relation(fields: [gradeId], references: [id])
-  supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
+  supervisor    Teacher        @relation(fields: [supervisorId], references: [id])
   events        Event[]
   lessons       Lesson[]
   students      Student[]
@@ -117,7 +116,7 @@ model Exam {
   startTime DateTime
   endTime   DateTime
   lessonId  Int
-  lessons   Lesson   @relation(fields: [lessonId], references: [id])
+  lessons   Lesson  @relation(fields: [lessonId], references: [id])
   results   Result[]
 }
 
@@ -127,7 +126,7 @@ model Assignment {
   startTime DateTime
   dueTime   DateTime
   lessonId  Int
-  lessons   Lesson   @relation(fields: [lessonId], references: [id])
+  lessons   Lesson  @relation(fields: [lessonId], references: [id])
   results   Result[]
 }
 
@@ -149,7 +148,7 @@ model Attendance {
   present   Boolean
   studentId String
   lessonId  Int
-  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  lesson    Lesson  @relation(fields: [lessonId], references: [id])
   student   Student  @relation(fields: [studentId], references: [id])
 }
 

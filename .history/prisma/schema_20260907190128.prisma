@@ -73,15 +73,16 @@ model Grade {
 }
 
 model Class {
-  id           Int     @id @default(autoincrement())
-  name         String  @unique
-  capacity     Int
-  gradeId      Int
-  supervisorId String?
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  capacity      Int
+  gradeId       Int
+  supervisorId  String?
 
   announcements Announcement[]
   grade         Grade          @relation(fields: [gradeId], references: [id])
   supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
+
   events        Event[]
   lessons       Lesson[]
   students      Student[]
