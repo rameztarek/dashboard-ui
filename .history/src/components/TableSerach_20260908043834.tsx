@@ -1,0 +1,31 @@
+"use client"
+
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+
+
+const TableSerach = () => {
+  const ruonter = useRouter()
+
+  const handleSubmit = () =>{
+      const params = await searchParams;
+  const { page, ...queryParams } = params;
+
+  const p = page ? parseInt(page) : 1; 
+  }
+
+  return (
+    <form onSubmit={Submit} className="w-full md:w-auto flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2">
+        {/* SEARCH BAR */}
+        <Image src="/search.png" alt="search" width={14} height={14} />
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-50 p-2 bg-transparent outline-none "
+        />
+      </form>
+  );
+};
+
+export default TableSerach;
