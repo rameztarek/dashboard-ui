@@ -1,0 +1,38 @@
+import prisma from "@/lib/prisma";
+
+const EventList = async ({ dateParam }: { dateParam: string | undefined }) => {
+  const parsedDate = dateParam ? new Date(dateParam) : new Date();
+
+  // لو التاريخ اللي جاي مش صالح، استخدم تاريخ اليوم كبديل آمن
+  const date = !(parsedDate.getTime()) ? new Date() : parsedDate;
+
+  const data = await prisma.event.findMany({
+    where: {
+      startTime: {
+        gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
+        lte: new Date(new Date(date).setHours(23, 59, 59, 999)),
+      },
+    },
+  });
+
+  return data.map((event) => (
+    <div
+      key={event.id}
+      className="p-5 rounded-md border-2 border-gray-200 border-t-4 odd:border-t-lama-sky even:border-t-lama-purple"
+    >
+      <div className="flex items-center justify-between">
+        <h1 className="font-semibold text-gray-600">{event.title}</h1>
+        <span className="text-gray-300 text-xs">
+          {event.startTime.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
+        </span>
+      </div>
+      <p className="mt-2 text-gray-400 text-xs">{event.description}</p>
+    </div>
+  ));
+};
+
+export default EventList;

@@ -3,10 +3,17 @@
     "**/node_modules/**": true,
     "**/.next/**": true,
     "**/.git/**": true,
-    "**/src/generated/**": true
+    "**/src/generated/**": true,
+    "**/.history/**": true,
+    "**/.pi/**": true,
+    "**/*.tsbuildinfo": true
   },
   "search.exclude": {
     "**/node_modules": true,
-    "**/.next": true
+    "**/.next": true,
+    "**/src/generated": true,
+    "**/.history": true,
+    "**/.pi": true,
+    "**/*.tsbuildinfo": true
   }
 }
