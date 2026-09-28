@@ -2,98 +2,148 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z from "zod";
-import InputFiled from "../InputFiled";
+import { useEffect, useActionState, startTransition } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const schema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
-  subject: z.string().min(1, { message: "Subject is required" }),
-  className: z.string().min(1, { message: "Class is required" }),
-  date: z.string().min(1, { message: "Date is required" }),
-  startTime: z.string().min(1, { message: "Start time is required" }),
-  endTime: z.string().min(1, { message: "End time is required" }),
-});
+import InputFiled from "../InputFiled";
+import { examSchema } from "@/lib/FormValidationSchema";
+import { createExam, updateExam } from "@/lib/actions";
+import { FormModleProps } from "../FormContainer";
+
+const formatDateTime = (value?: string | Date | null) => {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+};
 
 const ExamForm = ({
   type,
   data,
-}: {
-  type: "create" | "update";
-  data?: any;
-}) => {
+  setOpen,
+  relatedData = {},
+}: FormModleProps) => {
+  const lessons = relatedData?.lessons ?? [];
+
+  const [state, formAction] = useActionState(
+    type === "create" ? createExam : updateExam,
+    {
+      success: false,
+      error: false,
+    },
+  );
+
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema), mode: "onChange" });
-  const onSubmit = handleSubmit((data) => console.log(data));
-  const fillSampleData = () => {
-    setValue("title", "Midterm Examination", { shouldValidate: true });
-    setValue("subject", "Mathematics", { shouldValidate: true });
-    setValue("className", "4A", { shouldValidate: true });
-    setValue("date", "2025-02-10", { shouldValidate: true });
-    setValue("startTime", "09:00", { shouldValidate: true });
-    setValue("endTime", "10:30", { shouldValidate: true });
-  };
+  } = useForm({
+    resolver: zodResolver(examSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: data?.id,
+      title: data?.title ?? "",
+      startTime: formatDateTime(data?.startTime),
+      endTime: formatDateTime(data?.endTime),
+      lessonId: data?.lessonId ? String(data.lessonId) : "",
+    },
+  });
+
+  const onSubmit = handleSubmit((values) => {
+    const formData = new FormData();
+
+    if (values.id !== undefined) {
+      formData.append("id", String(values.id));
+    }
+
+    formData.append("title", values.title);
+    formData.append("startTime", String(values.startTime));
+    formData.append("endTime", String(values.endTime));
+    formData.append("lessonId", String(values.lessonId));
+
+    startTransition(() => {
+      formAction(formData);
+    });
+  });
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success(`Exam ${type === "create" ? "created" : "updated"} successfully`);
+      setOpen?.(false);
+      router.refresh();
+    }
+  }, [state.success, type, setOpen, router]);
+
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Create A New Exam</h1>
-        <button
-          type="button"
-          onClick={fillSampleData}
-          className="text-xs bg-lama-yellow text-white px-3 py-1.5 rounded-md"
+    <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+      <h1 className="text-xl font-semibold">
+        {type === "create" ? "Create A New Exam" : "Update The Exam"}
+      </h1>
+
+      <InputFiled
+        label="Exam Title"
+        name="title"
+        register={register}
+        error={errors.title}
+      />
+
+      <InputFiled
+        label="Start Date"
+        name="startTime"
+        type="datetime-local"
+        register={register}
+        error={errors.startTime}
+      />
+
+      <InputFiled
+        label="End Date"
+        name="endTime"
+        type="datetime-local"
+        register={register}
+        error={errors.endTime}
+      />
+
+      <div className="flex flex-col gap-2">
+        <label className="text-xs text-gray-500">Lesson</label>
+
+        <select
+          {...register("lessonId")}
+          className="rounded-md p-2 text-sm ring-[1.5px] ring-gray-300"
         >
-          Fill sample data
-        </button>
+          <option value="">Select a lesson</option>
+
+          {lessons.map((lesson: { id: number; name: string }) => (
+            <option key={lesson.id} value={lesson.id}>
+              {lesson.name}
+            </option>
+          ))}
+        </select>
+
+        {errors.lessonId?.message && (
+          <p className="text-sm text-red-400">
+            {String(errors.lessonId.message)}
+          </p>
+        )}
       </div>
-      <span className="text-gray-500 font-medium">Exam Information</span>
-      <div className="flex justify-between flex-wrap gap-4">
-        <InputFiled
-          label="Title"
-          name="title"
-          register={register}
-          error={errors.title}
-        />
-        <InputFiled
-          label="Subject"
-          name="subject"
-          register={register}
-          error={errors.subject}
-        />
-        <InputFiled
-          label="Class"
-          name="className"
-          register={register}
-          error={errors.className}
-        />
-        <InputFiled
-          label="Date"
-          name="date"
-          type="date"
-          register={register}
-          error={errors.date}
-        />
-        <InputFiled
-          label="Start Time"
-          name="startTime"
-          type="time"
-          register={register}
-          error={errors.startTime}
-        />
-        <InputFiled
-          label="End Time"
-          name="endTime"
-          type="time"
-          register={register}
-          error={errors.endTime}
-        />
-      </div>
-      <button className="bg-blue-400 text-white rounded-md p-2">
-        {type === "create" ? "create" : "update"}
+
+      {state.error && (
+        <p className="text-red-500">Something went wrong.</p>
+      )}
+
+      <button
+        type="submit"
+        className="rounded-md bg-blue-400 p-2 text-white"
+      >
+        {type === "create" ? "Create" : "Update"}
       </button>
     </form>
   );
 };
+
 export default ExamForm;

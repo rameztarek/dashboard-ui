@@ -9,39 +9,43 @@ export const getUserRole = async () => {
 const currentWorkWeek = () => {
   const today = new Date();
   const dayOfWeek = today.getDay();
-
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const startOfWeek = new Date(today);
-
-  if (dayOfWeek === 0) {
-    startOfWeek.setDate(today.getDate() + 1);
-  }
-  if (dayOfWeek === 0) {
-    startOfWeek.setDate(today.getDate() + 2);
-  } else {
-    startOfWeek.setDate(today.getDate() - (dayOfWeek - 1));
-  }
+  startOfWeek.setDate(today.getDate() - daysFromMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 2);
-  startOfWeek.setHours(23, 59, 59, 999);
+  return { startOfWeek };
+};
 
-  return { startOfWeek, };
+const dayOffsets: Record<string, number> = {
+  MONDAY: 0,
+  TUESDAY: 1,
+  WEDNESDAY: 2,
+  THURSDAY: 3,
+  FRIDAY: 4,
 };
 
 export const adjustScheduleToCurrentWeek = (
-  lessons: { title: string; start: Date; end: Date }[],
+  lessons: {
+    title: string;
+    day?: string;
+    start: Date;
+    end: Date;
+    className?: string;
+    subjectName?: string;
+  }[],
 ) => {
   const { startOfWeek } = currentWorkWeek();
 
   return lessons.map((lesson) => {
-    const lessonDayOfWeek = lesson.start.getDay();
-
-    const daysFromMonday = lessonDayOfWeek === 0 ? 6 : lessonDayOfWeek - 1;
+    const daysFromMonday =
+      lesson.day && dayOffsets[lesson.day] !== undefined
+        ? dayOffsets[lesson.day]
+        : ((lesson.start.getDay() + 6) % 7);
 
     const adjustedStartDate = new Date(startOfWeek);
     adjustedStartDate.setDate(startOfWeek.getDate() + daysFromMonday);
-      adjustedStartDate.setHours(
+    adjustedStartDate.setHours(
       lesson.start.getHours(),
       lesson.start.getMinutes(),
       lesson.start.getSeconds(),
@@ -58,6 +62,8 @@ export const adjustScheduleToCurrentWeek = (
       title: lesson.title,
       start: adjustedStartDate,
       end: adjustedEndDate,
+      className: lesson.className,
+      subjectName: lesson.subjectName,
     };
   });
 };

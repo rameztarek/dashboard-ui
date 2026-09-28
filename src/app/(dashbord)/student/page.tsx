@@ -7,20 +7,27 @@ import { auth } from "@clerk/nextjs/server";
 const StudentPage = async () => {
   const { userId } = await auth();
 
-  const classItem = await prisma.class.findMany({
-    where: {
-      students: { some: { id: userId! } },
+  const student = await prisma.student.findUnique({
+    where: { id: userId ?? "" },
+    select: {
+      classId: true,
+      class: { select: { name: true } },
     },
   });
 
-  console.log(classItem)
+  if (!student) {
+    return <p className="p-4">Student profile was not found.</p>;
+  }
+
   return (
     <section className="p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}
       <div className="w-full xl:w-2/3 ">
         <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Schedule (4A)</h1>
-          <BigCalenderContainer type="classId" id={classItem[0].id} />
+          <h1 className="text-xl font-semibold">
+            Schedule ({student.class.name})
+          </h1>
+          <BigCalenderContainer type="classId" id={student.classId} />
         </div>
       </div>
       {/* RIGHT */}

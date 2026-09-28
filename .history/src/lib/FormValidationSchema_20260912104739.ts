@@ -1,0 +1,9 @@
+import z from "zod";
+
+export const subjectSchema = z.object({
+  id: z.number().optiona
+  name: z.string().min(1, { message: "Subject name is required" }),
+
+});
+
+export type SubjectInput = z.infer<typeof subjectSchema>;
