@@ -12,11 +12,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  createStudentSchema,
-  StudentSchemaInput,
-  studentSchema,
-} from "@/lib/FormValidationSchema";
+import { StudentSchemaInput, studentSchema } from "@/lib/FormValidationSchema";
 import { updateStudent, createStudent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -34,18 +30,15 @@ const StudentForm = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
 }) => {
-  const [img, setImg] = useState<{ secure_url: string } | undefined>(
-    data?.img ? { secure_url: data.img } : undefined,
-  );
+  const [img, setImg] = useState<{ secure_url: string } | undefined>();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<z.input<typeof studentSchema>, any, StudentSchemaInput>({
-    resolver: zodResolver(
-      type === "create" ? createStudentSchema : studentSchema,
-    ),
+    resolver: zodResolver(studentSchema),
     mode: "onChange",
     defaultValues: {
       userName: data?.username ?? "",
@@ -54,11 +47,8 @@ const StudentForm = ({
       email: data?.email ?? "",
       phone: data?.phone ?? "",
       address: data?.address ?? "",
-      birthDate: data?.birthday
-        ? new Date(data.birthday).toISOString().split("T")[0]
-        : "",
+      birthDate: data?.birthday ?? "",
       sex: data?.sex ?? "",
-      bloodType: data?.bloodType ?? "",
       gradeId: data?.gradeId ?? undefined,
       classId: data?.classId ?? undefined,
       parentId: data?.parentId ?? "",
@@ -169,25 +159,13 @@ const StudentForm = ({
           error={errors.birthDate}
         />
 
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Parent</label>
-          <select
-            {...register("parentId")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-          >
-            <option value="">Select a parent</option>
-            {(relatedData?.parents ?? []).map(
-              (parent: { id: string; name: string; surname: string }) => (
-                <option value={parent.id} key={parent.id}>
-                  {parent.name} {parent.surname}
-                </option>
-              ),
-            )}
-          </select>
-          {errors.parentId?.message && (
-            <p className="text-sm text-red-400">{errors.parentId.message}</p>
-          )}
-        </div>
+        <InputFiled
+          label="Parent Id"
+          name="parentId"
+          defaultValue={data?.parentId}
+          register={register}
+          error={errors.parentId}
+        />
 
         <InputFiled
           label="Blood Type"
@@ -304,8 +282,9 @@ const StudentForm = ({
       </button>
       {state.error && (
         <p className="text-center text-sm text-red-500">
-          {state.message ??
-            `Could not ${type === "create" ? "create" : "update"} this student.`}
+          Could not {type === "create" ? "create" : "update"} this Student. Use
+          a password with at least 15 characters and make sure the username,
+          email, and phone number are not already in use.
         </p>
       )}
     </form>

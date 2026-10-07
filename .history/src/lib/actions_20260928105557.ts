@@ -344,44 +344,43 @@ export const createTeacher = async (
   data: TeacherSchemaInput,
 ) => {
   try {
-    const parsedData = createTeacherSchema.parse(data);
-    const client = await clerkClient();
-    const subjectIds = parsedData.subject
-      .filter((subjectId): subjectId is string => Boolean(subjectId))
-      .map(Number)
-      .filter(Number.isInteger);
+    const parsedData = teacherSchema.parse(data);
+    const studentData = parsedData as typeof parsedData & {
+      gradeId: number;
+      classId: number;
+      parentId: string;
+    };
+    const bloodType = (data as { bloodType?: string | null }).bloodType ?? "";
 
-    await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
-          username: parsedData.userName,
-          password: parsedData.password,
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "teacher" },
-        }),
-      (userId) =>
-        prisma.teacher.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone || null,
-            address: parsedData.address,
-            img: parsedData.img || null,
-            bloodType: parsedData.bloodType,
-            sex: parsedData.sex,
-            birthday: new Date(parsedData.birthDate),
-            subjects: { connect: subjectIds.map((id) => ({ id })) },
-          },
-        }),
-    );
+    const client = await clerkClient();
+    const user = await client.users.createUser({
+      username: parsedData.userName,
+      password: parsedData.password,
+      firstName: parsedData.firstName,
+      lastName: parsedData.lastName,
+      publicMetadata: { role: "teacher" },
+    });
+
+    await prisma.teacher.create({
+      data: {
+        id: user.id,
+        username: parsedData.userName,
+        name: parsedData.firstName,
+        surname: parsedData.lastName,
+        email: parsedData.email || null,
+        phone: parsedData.phone || null,
+        address: parsedData.address,
+        img: parsedData.img || null,
+        bloodType,
+        sex: parsedData.sex,
+        birthday: new Date(parsedData.birthDate),
+      },
+    });
 
     return { success: true, error: false };
   } catch (err) {
-    return failure("Error creating teacher", err);
+    console.log("Error creating teacher:", err);
+    return { success: false, error: true };
   }
 };
 
@@ -391,13 +390,15 @@ export const updateTeacher = async (
 ) => {
   try {
     const parsedData = teacherSchema.parse(data);
+    const studentData = parsedData as typeof parsedData & {
+      gradeId: number;
+      classId: number;
+      parentId: string;
+    };
+    const bloodType = (data as { bloodType?: string | null }).bloodType ?? "";
 
     if (!parsedData.id) {
-      return {
-        success: false,
-        error: true,
-        message: "Teacher ID is required.",
-      };
+      return { success: false, error: true };
     }
 
     const client = await clerkClient();
@@ -407,11 +408,6 @@ export const updateTeacher = async (
       firstName: parsedData.firstName,
       lastName: parsedData.lastName,
     });
-
-    const subjectIds = parsedData.subject
-      .filter((subjectId): subjectId is string => Boolean(subjectId))
-      .map(Number)
-      .filter(Number.isInteger);
 
     await prisma.teacher.update({
       where: { id: parsedData.id },
@@ -423,18 +419,25 @@ export const updateTeacher = async (
         phone: parsedData.phone || null,
         address: parsedData.address,
         img: parsedData.img || null,
-        bloodType: parsedData.bloodType,
+        bloodType,
         sex: parsedData.sex,
         birthday: new Date(parsedData.birthDate),
         subjects: {
-          set: subjectIds.map((id) => ({ id })),
+          set: parsedData.subject
+            ?.filter(
+              (subjectId): subjectId is string => subjectId !== undefined,
+            )
+            .map((subjectId) => ({
+              id: parseInt(subjectId),
+            })),
         },
       },
     });
 
     return { success: true, error: false };
   } catch (err) {
-    return failure("Error updating teacher", err);
+    console.log("Error updating teacher:", err);
+    return { success: false, error: true };
   }
 };
 
@@ -505,43 +508,49 @@ export const createStudent = async (
   currentState: CurrentState,
   data: StudentSchemaInput,
 ) => {
-  try {
-    const parsedData = createStudentSchema.parse(data);
-    const client = await clerkClient();
+  let createdUserId: string | undefined;
 
-    await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
-          username: parsedData.userName,
-          password: parsedData.password,
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "student" },
-        }),
-      (userId) =>
-        prisma.student.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone || null,
-            address: parsedData.address,
-            img: parsedData.img || null,
-            bloodType: parsedData.bloodType || "",
-            gradeId: parsedData.gradeId,
-            classId: parsedData.classId,
-            parentId: parsedData.parentId,
-            sex: parsedData.sex,
-            birthday: new Date(parsedData.birthDate),
-          },
-        }),
-    );
+  const parsedData = studentSchema.parse(data);
+  try {
+    const client = await clerkClient();
+    const user = await client.users.createUser({
+      username: parsedData.userName,
+      password: parsedData.password,
+      firstName: parsedData.firstName,
+      lastName: parsedData.lastName,
+      publicMetadata: { role: "student" },
+    });
+
+    createdUserId = user.id;
+
+    await prisma.student.create({
+      data: {
+        id: user.id,
+        username: parsedData.userName,
+        name: parsedData.firstName ?? "",
+        surname: parsedData.lastName ?? "",
+        email: parsedData.email || null,
+        phone: parsedData.phone || null,
+        address: parsedData.address,
+        img: parsedData.img || null,
+        bloodType: parsedData.bloodType ?? "",
+        gradeId: parsedData.gradeId,
+        classId: parsedData.classId,
+        parentId: parsedData.parentId!,
+        sex: parsedData.sex,
+        birthday: new Date(parsedData.birthDate),
+      },
+    });
 
     return { success: true, error: false };
   } catch (err) {
-    return failure("Error creating student", err);
+    console.log("Error creating student:", err);
+
+    if (createdUserId) {
+      await deleteClerkUser(createdUserId);
+    }
+
+    return { success: false, error: true };
   }
 };
 
@@ -551,11 +560,7 @@ export const updateStudent = async (
 ) => {
   try {
     if (!data.id) {
-      return {
-        success: false,
-        error: true,
-        message: "Student ID is required.",
-      };
+      return { success: false, error: true };
     }
 
     const existingStudent = await prisma.student.findUnique({
@@ -563,11 +568,7 @@ export const updateStudent = async (
     });
 
     if (!existingStudent) {
-      return {
-        success: false,
-        error: true,
-        message: "The student no longer exists.",
-      };
+      return { success: false, error: true };
     }
 
     const parsedData = studentSchema.parse({
@@ -614,82 +615,8 @@ export const updateStudent = async (
 
     return { success: true, error: false };
   } catch (err) {
-    return failure("Error updating student", err);
-  }
-};
-
-export const createParent = async (
-  currentState: CurrentState,
-  data: ParentSchemaInput,
-) => {
-  try {
-    const parsedData = createParentSchema.parse(data);
-    const client = await clerkClient();
-
-    await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
-          username: parsedData.userName,
-          password: parsedData.password,
-          ...(parsedData.email ? { emailAddress: [parsedData.email] } : {}),
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "parent" },
-        }),
-      (userId) =>
-        prisma.parent.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone,
-            address: parsedData.address,
-          },
-        }),
-    );
-
-    return { success: true, error: false };
-  } catch (err) {
-    return failure("Error creating parent", err);
-  }
-};
-
-export const updateParent = async (
-  currentState: CurrentState,
-  data: ParentSchemaInput,
-) => {
-  try {
-    const parsedData = parentSchema.parse(data);
-    if (!parsedData.id) {
-      return { success: false, error: true, message: "Parent ID is required." };
-    }
-
-    const client = await clerkClient();
-    await client.users.updateUser(parsedData.id, {
-      username: parsedData.userName,
-      ...(parsedData.password ? { password: parsedData.password } : {}),
-      ...(parsedData.email ? { emailAddress: parsedData.email } : {}),
-      firstName: parsedData.firstName,
-      lastName: parsedData.lastName,
-    });
-
-    await prisma.parent.update({
-      where: { id: parsedData.id },
-      data: {
-        username: parsedData.userName,
-        name: parsedData.firstName,
-        surname: parsedData.lastName,
-        email: parsedData.email || null,
-        phone: parsedData.phone,
-        address: parsedData.address,
-      },
-    });
-
-    return { success: true, error: false };
-  } catch (err) {
-    return failure("Error updating parent", err);
+    console.error("Error updating student:", err);
+    return { success: false, error: true };
   }
 };
 

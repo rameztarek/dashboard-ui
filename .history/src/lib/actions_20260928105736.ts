@@ -352,31 +352,29 @@ export const createTeacher = async (
       .filter(Number.isInteger);
 
     await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
+      () => client.users.createUser({
+        username: parsedData.userName,
+        password: parsedData.password,
+        firstName: parsedData.firstName,
+        lastName: parsedData.lastName,
+        publicMetadata: { role: "teacher" },
+      }),
+      (userId) => prisma.teacher.create({
+        data: {
+          id: userId,
           username: parsedData.userName,
-          password: parsedData.password,
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "teacher" },
-        }),
-      (userId) =>
-        prisma.teacher.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone || null,
-            address: parsedData.address,
-            img: parsedData.img || null,
-            bloodType: parsedData.bloodType,
-            sex: parsedData.sex,
-            birthday: new Date(parsedData.birthDate),
-            subjects: { connect: subjectIds.map((id) => ({ id })) },
-          },
-        }),
+          name: parsedData.firstName,
+          surname: parsedData.lastName,
+          email: parsedData.email || null,
+          phone: parsedData.phone || null,
+          address: parsedData.address,
+          img: parsedData.img || null,
+          bloodType: parsedData.bloodType,
+          sex: parsedData.sex,
+          birthday: new Date(parsedData.birthDate),
+          subjects: { connect: subjectIds.map((id) => ({ id })) },
+        },
+      }),
     );
 
     return { success: true, error: false };
@@ -393,11 +391,7 @@ export const updateTeacher = async (
     const parsedData = teacherSchema.parse(data);
 
     if (!parsedData.id) {
-      return {
-        success: false,
-        error: true,
-        message: "Teacher ID is required.",
-      };
+      return { success: false, error: true, message: "Teacher ID is required." };
     }
 
     const client = await clerkClient();
@@ -510,33 +504,31 @@ export const createStudent = async (
     const client = await clerkClient();
 
     await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
+      () => client.users.createUser({
+        username: parsedData.userName,
+        password: parsedData.password,
+        firstName: parsedData.firstName,
+        lastName: parsedData.lastName,
+        publicMetadata: { role: "student" },
+      }),
+      (userId) => prisma.student.create({
+        data: {
+          id: userId,
           username: parsedData.userName,
-          password: parsedData.password,
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "student" },
-        }),
-      (userId) =>
-        prisma.student.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone || null,
-            address: parsedData.address,
-            img: parsedData.img || null,
-            bloodType: parsedData.bloodType || "",
-            gradeId: parsedData.gradeId,
-            classId: parsedData.classId,
-            parentId: parsedData.parentId,
-            sex: parsedData.sex,
-            birthday: new Date(parsedData.birthDate),
-          },
-        }),
+          name: parsedData.firstName,
+          surname: parsedData.lastName,
+          email: parsedData.email || null,
+          phone: parsedData.phone || null,
+          address: parsedData.address,
+          img: parsedData.img || null,
+          bloodType: parsedData.bloodType || "",
+          gradeId: parsedData.gradeId,
+          classId: parsedData.classId,
+          parentId: parsedData.parentId,
+          sex: parsedData.sex,
+          birthday: new Date(parsedData.birthDate),
+        },
+      }),
     );
 
     return { success: true, error: false };
@@ -551,11 +543,7 @@ export const updateStudent = async (
 ) => {
   try {
     if (!data.id) {
-      return {
-        success: false,
-        error: true,
-        message: "Student ID is required.",
-      };
+      return { success: false, error: true, message: "Student ID is required." };
     }
 
     const existingStudent = await prisma.student.findUnique({
@@ -563,11 +551,7 @@ export const updateStudent = async (
     });
 
     if (!existingStudent) {
-      return {
-        success: false,
-        error: true,
-        message: "The student no longer exists.",
-      };
+      return { success: false, error: true, message: "The student no longer exists." };
     }
 
     const parsedData = studentSchema.parse({
@@ -627,27 +611,25 @@ export const createParent = async (
     const client = await clerkClient();
 
     await createClerkUserWithRollback(
-      () =>
-        client.users.createUser({
+      () => client.users.createUser({
+        username: parsedData.userName,
+        password: parsedData.password,
+        ...(parsedData.email ? { emailAddress: [parsedData.email] } : {}),
+        firstName: parsedData.firstName,
+        lastName: parsedData.lastName,
+        publicMetadata: { role: "parent" },
+      }),
+      (userId) => prisma.parent.create({
+        data: {
+          id: userId,
           username: parsedData.userName,
-          password: parsedData.password,
-          ...(parsedData.email ? { emailAddress: [parsedData.email] } : {}),
-          firstName: parsedData.firstName,
-          lastName: parsedData.lastName,
-          publicMetadata: { role: "parent" },
-        }),
-      (userId) =>
-        prisma.parent.create({
-          data: {
-            id: userId,
-            username: parsedData.userName,
-            name: parsedData.firstName,
-            surname: parsedData.lastName,
-            email: parsedData.email || null,
-            phone: parsedData.phone,
-            address: parsedData.address,
-          },
-        }),
+          name: parsedData.firstName,
+          surname: parsedData.lastName,
+          email: parsedData.email || null,
+          phone: parsedData.phone,
+          address: parsedData.address,
+        },
+      }),
     );
 
     return { success: true, error: false };

@@ -12,11 +12,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  createStudentSchema,
-  StudentSchemaInput,
-  studentSchema,
-} from "@/lib/FormValidationSchema";
+import { createStudentSchema, StudentSchemaInput, studentSchema } from "@/lib/FormValidationSchema";
 import { updateStudent, createStudent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -43,9 +39,7 @@ const StudentForm = ({
     handleSubmit,
     formState: { errors },
   } = useForm<z.input<typeof studentSchema>, any, StudentSchemaInput>({
-    resolver: zodResolver(
-      type === "create" ? createStudentSchema : studentSchema,
-    ),
+    resolver: zodResolver(type === "create" ? createStudentSchema : studentSchema),
     mode: "onChange",
     defaultValues: {
       userName: data?.username ?? "",
@@ -54,9 +48,7 @@ const StudentForm = ({
       email: data?.email ?? "",
       phone: data?.phone ?? "",
       address: data?.address ?? "",
-      birthDate: data?.birthday
-        ? new Date(data.birthday).toISOString().split("T")[0]
-        : "",
+      birthDate: data?.birthday ? new Date(data.birthday).toISOString().split("T")[0] : "",
       sex: data?.sex ?? "",
       bloodType: data?.bloodType ?? "",
       gradeId: data?.gradeId ?? undefined,
@@ -304,8 +296,7 @@ const StudentForm = ({
       </button>
       {state.error && (
         <p className="text-center text-sm text-red-500">
-          {state.message ??
-            `Could not ${type === "create" ? "create" : "update"} this student.`}
+          {state.message ?? `Could not ${type === "create" ? "create" : "update"} this student.`}
         </p>
       )}
     </form>

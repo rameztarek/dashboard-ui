@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import InputFiled from "../InputFiled";
 import {
   Dispatch,
@@ -12,18 +11,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  createStudentSchema,
-  StudentSchemaInput,
-  studentSchema,
-} from "@/lib/FormValidationSchema";
-import { updateStudent, createStudent } from "@/lib/actions";
+import { createTeacherSchema, TeacherSchemaInput, teacherSchema } from "@/lib/FormValidationSchema";
+import { updateTeacher, createTeacher } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 
-const StudentForm = ({
+const TeachersForm = ({
   type,
   data,
   setOpen,
@@ -42,10 +37,8 @@ const StudentForm = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.input<typeof studentSchema>, any, StudentSchemaInput>({
-    resolver: zodResolver(
-      type === "create" ? createStudentSchema : studentSchema,
-    ),
+  } = useForm<TeacherSchemaInput>({
+    resolver: zodResolver(type === "create" ? createTeacherSchema : teacherSchema),
     mode: "onChange",
     defaultValues: {
       userName: data?.username ?? "",
@@ -54,19 +47,15 @@ const StudentForm = ({
       email: data?.email ?? "",
       phone: data?.phone ?? "",
       address: data?.address ?? "",
-      birthDate: data?.birthday
-        ? new Date(data.birthday).toISOString().split("T")[0]
-        : "",
+      birthDate: data?.birthday ? new Date(data.birthday).toISOString().split("T")[0] : "",
       sex: data?.sex ?? "",
       bloodType: data?.bloodType ?? "",
-      gradeId: data?.gradeId ?? undefined,
-      classId: data?.classId ?? undefined,
-      parentId: data?.parentId ?? "",
+      subject: data?.subjects?.map((s: any) => String(s.id)) ?? [],
     },
   });
 
   const [state, formAction] = useActionState(
-    type === "create" ? createStudent : updateStudent,
+    type === "create" ? createTeacher : updateTeacher,
     {
       success: false,
       error: false,
@@ -80,9 +69,10 @@ const StudentForm = ({
       formAction({ ...formValues, img: img?.secure_url });
     });
   });
+
   useEffect(() => {
     if (state.success) {
-      toast(`Student has been ${type === "create" ? "created" : "updated"}!`);
+      toast(`Teacher has been ${type === "create" ? "created" : "updated"}!`);
       setOpen?.(false);
       router.refresh();
     }
@@ -92,7 +82,7 @@ const StudentForm = ({
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">
-          {type === "create" ? "Create A New Student" : "Update The Student"}
+          {type === "create" ? "Create A New Teacher" : "Update The Teacher"}
         </h1>
       </div>
 
@@ -104,6 +94,7 @@ const StudentForm = ({
           label="Username"
           name="userName"
           defaultValue={data?.userName}
+
           register={register}
           error={errors.userName}
         />
@@ -111,6 +102,7 @@ const StudentForm = ({
           label="Email"
           name="email"
           defaultValue={data?.email}
+
           type="email"
           register={register}
           error={errors.email}
@@ -131,6 +123,7 @@ const StudentForm = ({
           label="First Name"
           name="firstName"
           defaultValue={data?.firstName}
+
           register={register}
           error={errors.firstName}
         />
@@ -138,6 +131,7 @@ const StudentForm = ({
           label="Last Name"
           name="lastName"
           defaultValue={data?.lastName}
+
           register={register}
           error={errors.lastName}
         />
@@ -145,6 +139,7 @@ const StudentForm = ({
           label="Phone Number"
           name="phone"
           defaultValue={data?.phone}
+
           type="tel"
           register={register}
           error={errors.phone}
@@ -158,36 +153,12 @@ const StudentForm = ({
         />
         <InputFiled
           label="Birth Date"
-          type="date"
           name="birthDate"
-          defaultValue={
-            data?.birthday
-              ? new Date(data.birthday).toISOString().split("T")[0]
-              : ""
-          }
+          type="date"
+          defaultValue={data?.birthday?.toISOString().split("T")[0] ?? ""}
           register={register}
           error={errors.birthDate}
         />
-
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Parent</label>
-          <select
-            {...register("parentId")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-          >
-            <option value="">Select a parent</option>
-            {(relatedData?.parents ?? []).map(
-              (parent: { id: string; name: string; surname: string }) => (
-                <option value={parent.id} key={parent.id}>
-                  {parent.name} {parent.surname}
-                </option>
-              ),
-            )}
-          </select>
-          {errors.parentId?.message && (
-            <p className="text-sm text-red-400">{errors.parentId.message}</p>
-          )}
-        </div>
 
         <InputFiled
           label="Blood Type"
@@ -209,13 +180,14 @@ const StudentForm = ({
           />
         )}
 
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Sex</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("sex")}
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
           >
-            <option value="">Select sex</option>
+            <option value="">Select gender</option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
           </select>
@@ -227,51 +199,23 @@ const StudentForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Grade</label>
+          <label className="text-xs text-gray-500">Subjects</label>
           <select
-            {...register("gradeId")}
+            multiple
+            {...register("subject")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
           >
-            <option value="">Select grade</option>
-            {(relatedData?.grades ?? []).map(
-              (grade: { id: number; level: number }) => (
-                <option value={grade.id} key={grade.id}>
-                  {grade.level}
+            {(relatedData?.subjects ?? []).map(
+              (subject: { id: number; name: string }) => (
+                <option value={subject.id} key={subject.id}>
+                  {subject.name}
                 </option>
               ),
             )}
           </select>
-          {errors.gradeId?.message && (
+          {errors.subject?.message && (
             <p className="text-sm text-red-400">
-              {errors.gradeId.message.toString()}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Class</label>
-          <select
-            {...register("classId")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-          >
-            <option value="">Select class</option>
-            {(relatedData?.classes ?? []).map(
-              (studentClass: {
-                id: number;
-                name: string;
-                capacity: number;
-                _count: { students: number };
-              }) => (
-                <option value={studentClass.id} key={studentClass.id}>
-                  {studentClass.name} - {studentClass._count.students}/
-                  {studentClass.capacity} Capacity
-                </option>
-              ),
-            )}
-          </select>
-          {errors.classId?.message && (
-            <p className="text-sm text-red-400">
-              {errors.classId.message.toString()}
+              {errors.subject.message.toString()}
             </p>
           )}
         </div>
@@ -304,12 +248,13 @@ const StudentForm = ({
       </button>
       {state.error && (
         <p className="text-center text-sm text-red-500">
-          {state.message ??
-            `Could not ${type === "create" ? "create" : "update"} this student.`}
+          Could not {type === "create" ? "create" : "update"} this teacher.
+          Use a password with at least 15 characters and make sure the
+          username, email, and phone number are not already in use.
         </p>
       )}
     </form>
   );
 };
 
-export default StudentForm;
+export default TeachersForm;

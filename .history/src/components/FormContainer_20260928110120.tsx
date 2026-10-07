@@ -6,31 +6,31 @@ import { Dispatch, SetStateAction } from "react";
 
 export type FormModleProps = {
   table:
-    | "teacher"
-    | "teachers"
-    | "student"
-    | "students"
-    | "parent"
-    | "parents"
-    | "subject"
-    | "subjects"
-    | "class"
-    | "classes"
-    | "lesson"
-    | "lessons"
-    | "exam"
-    | "exams"
-    | "assignment"
-    | "assignments"
-    | "result"
-    | "results"
-    | "attendance"
-    | "attendances"
-    | "event"
-    | "events"
-    | "announcement"
-    | "error"
-    | "announcements";
+  | "teacher"
+  | "teachers"
+  | "student"
+  | "students"
+  | "parent"
+  | "parents"
+  | "subject"
+  | "subjects"
+  | "class"
+  | "classes"
+  | "lesson"
+  | "lessons"
+  | "exam"
+  | "exams"
+  | "assignment"
+  | "assignments"
+  | "result"
+  | "results"
+  | "attendance"
+  | "attendances"
+  | "event"
+  | "events"
+  | "announcement"
+  | "error"
+  | "announcements";
   type: "create" | "update" | "delete";
   data?: any;
   id?: number | string;
@@ -99,11 +99,9 @@ const FormContainer = async ({
       case "exam": {
         const { userId, sessionClaims } = await auth();
         const role = (
-          sessionClaims?.metadata as
-            | {
-                role?: "admin" | "teacher" | "teachers" | "student" | "parent";
-              }
-            | undefined
+          sessionClaims?.metadata as {
+            role?: "admin" | "teacher" | "teachers" | "student" | "parent";
+          } | undefined
         )?.role;
         const examLessons = await prisma.lesson.findMany({
           where: {
